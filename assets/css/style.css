@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.hide {
+    display: none;
+}
+
+header {
+  padding: 0 30px;
+}
+
+#form_container, .botao_adc_numero {
+  padding: 0 30px;
+}
+
+.formulario .input_box {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+}
+
+.formulario input,
+textarea {
+  width: 25%;
+}
+
+/* #form_container {
+    display: none;
+} */
+table {
+    margin: 50px auto;
+    width: 90%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid black;
+
+}
+
+.table_content td {
+  justify-content: space-evenly;
+  text-align: center;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-collapse: separate;
+  border-spacing: 0;
+}
