@@ -38,6 +38,16 @@ table {
 
 }
 
+.table_head {
+    background-color: royalblue;
+    color: white;
+}
+
+.table_head th {
+    border-right: 1px solid white;
+    border-left: 1px solid white;
+}
+
 .table_content td {
   justify-content: space-evenly;
   text-align: center;
