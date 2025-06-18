@@ -1,5 +1,30 @@
+<!-- https://www.youtube.com/watch?v=LxanIRy-Vtc -->
+
 <?php
 include_once("conector.php");
+
+//buscar os dados
+function buscarDados($id) {
+  $cmd = $this->pdo->prepare("SELECT * FROM contatos WHERE id = $id");
+  $cmd->execute();
+  $res= $cmd->fetch(PDO::FETCH_ASSOC);
+  return $res;
+  var_dump($res);
+}
+
+
+//atulizar os dados
+function atualizarDados() {
+
+}
+?>
+
+<?php 
+
+  if(isset($_GET['id'])) {
+    $id_update = addslashes($_GET['id']);
+    $res = $p->buscarDados($id);
+  }
 
 ?>
 
@@ -28,9 +53,8 @@ include_once("conector.php");
       <form action="cria_contato.php" method="GET" class="formulario">
         <div class="input_box">
           <label for="id">ID:</label>
-          <input type="text" id="id" name="id" value="<?php if (isset($row_usuario['nome'])) {
-            echo $row_usuario['nome'];
-          } ?>" />
+          <input type="text" id="id" name="id" value="<?php if (isset($res)) {
+            echo $res['nome'];} ?>" />
         </div>
 
         <div class="input_box">
