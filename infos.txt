@@ -1,0 +1,4 @@
+XAMPP
+MySql
+Banco: agenda-contatos
+table: contatos
