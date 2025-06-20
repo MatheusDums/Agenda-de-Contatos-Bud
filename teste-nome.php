@@ -1,5 +1,5 @@
 <?php
-/* conectando ao banco de dados (igual ao conector.php)*/
+/* conectando ao banco de dados */
 
 $servidor = "localhost";
 $banco = "agenda-contatos";
@@ -10,37 +10,35 @@ $pdo = new PDO("mysql:host=$servidor;dbname=$banco", $usuario, $senha);
 
 // salvar contatos
 if (isset($_GET["acao"]) && $_GET["acao"] == 'salvar') {
-  $id = $_GET["id"];
   $nome = $_GET["nome"];
   $telefone = $_GET["telefone"];
   $email = $_GET["email"];
   $nascimento = $_GET["nascimento"];
   $observacoes = $_GET["observacoes"];
 
-  $existe = $pdo->query("SELECT 1 FROM contatos WHERE id = $id")->fetch();
+  $existe = $pdo->query("SELECT 1 FROM contatos WHERE nome = '$nome'")->fetch();
 
   if ($existe) {
     //atualizar
-    $pdo->query("UPDATE contatos SET nome='$nome', telefone='$telefone', email='$email',
-                 nascimento='$nascimento', observacoes='$observacoes' WHERE id=$id");
+    $pdo->query("UPDATE contatos SET telefone='$telefone', email='$email',
+                 nascimento='$nascimento', observacoes='$observacoes' WHERE nome='$nome'");
   } else {
     //inserir
-    $pdo->query("INSERT INTO contatos(id, nome, telefone, email, nascimento, observacoes)
-          VALUES('$id', '$nome', '$telefone', '$email', '$nascimento', '$observacoes')");
+    $pdo->query("INSERT INTO contatos( nome, telefone, email, nascimento, observacoes)
+          VALUES( '$nome', '$telefone', '$email', '$nascimento', '$observacoes')");
   }
-  header("Location: index.php");
+  header("Location: teste-nome.php");
 }
 
 //exluir
 if (isset($_GET['acao']) && $_GET['acao'] == 'excluir') {
-  $id = $_GET['id'];
-  $pdo->query("DELETE FROM contatos WHERE id = $id");
-  header("Location: index.php");
+  $nome = $_GET['nome'];
+  $pdo->query("DELETE FROM contatos WHERE nome = '$nome'");
+  header("Location: teste-nome.php");
 }
 
 //editar
 $contato = [
-  "id" => "",
   "nome" => "",
   "telefone" => "",
   "email" => "",
@@ -49,8 +47,8 @@ $contato = [
 ];
 
 if (isset($_GET["acao"]) && $_GET["acao"] == "editar") {
-  $id = $_GET['id'];
-  $resultado = $pdo->query("SELECT * FROM contatos WHERE id = $id");
+  $nome = $_GET['nome'];
+  $resultado = $pdo->query("SELECT * FROM contatos WHERE nome = '$nome'");
   $contato = $resultado->fetch();
 }
 ?>
@@ -75,10 +73,6 @@ if (isset($_GET["acao"]) && $_GET["acao"] == "editar") {
       <form method="GET" class="formulario">
 
         <input type="hidden" name="acao" value="salvar">
-        <div class="input_box">
-          <label for="id">ID:</label>
-          <input type="text" name="id" id="id" value="<?php echo $contato['id']; ?>">
-        </div>
 
         <div class="input_box">
           <label for="nome">Nome:</label>
@@ -114,8 +108,7 @@ if (isset($_GET["acao"]) && $_GET["acao"] == "editar") {
       <div class="table_content">
         <table class="table">
           <thead class="table_head">
-            <tr>
-              <th>ID</th>
+            <tr>  
               <th>Nome</th>
               <th>Telefone</th>
               <th>Email</th>
@@ -130,14 +123,13 @@ if (isset($_GET["acao"]) && $_GET["acao"] == "editar") {
             $todos = $pdo->query("SELECT * FROM `contatos`");
             foreach ($todos as $linha) {
               echo "<tr>";
-              echo "<td>{$linha['id']}</td>";
               echo "<td>{$linha['nome']}</td>";
               echo "<td>{$linha['telefone']}</td>";
               echo "<td>{$linha['email']}</td>";
               echo "<td>{$linha['nascimento']}</td>";
               echo "<td>{$linha['observacoes']}</td>";
-              echo "<td><a href='index.php?acao=editar&id={$linha['id']}'>Editar</a> |
-                  <a href='index.php?acao=excluir&id={$linha['id']}' onclick=\"return confirm('Deseja excluir?')\">Excluir</a></td>";
+              echo "<td><a href='teste-nome.php?acao=editar&nome={$linha['nome']}'>Editar</a> |
+                  <a href='teste-nome.php?acao=excluir&nome={$linha['nome']}' onclick=\"return confirm('Deseja excluir?')\">Excluir</a></td>";
               echo "</tr>";
             }
             ?>

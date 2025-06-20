@@ -1,33 +1,59 @@
-<!-- https://www.youtube.com/watch?v=LxanIRy-Vtc -->
-
 <?php
-include_once("conector.php");
+/* conectando ao banco de dados */
 
-//buscar os dados
-function buscarDados($id) {
-  $cmd = $this->pdo->prepare("SELECT * FROM contatos WHERE id = $id");
-  $cmd->execute();
-  $res= $cmd->fetch(PDO::FETCH_ASSOC);
-  return $res;
-  var_dump($res);
-}
+$servidor = "localhost";
+$banco = "agenda-contatos";
+$usuario = "root";
+$senha = "";
 
+$pdo = new PDO("mysql:host=$servidor;dbname=$banco", $usuario, $senha);
 
-//atulizar os dados
-function atualizarDados() {
+// salvar contatos
+if (isset($_GET["acao"]) && $_GET["acao"] == 'salvar') {
+  $id = $_GET["id"];
+  $nome = $_GET["nome"];
+  $telefone = $_GET["telefone"];
+  $email = $_GET["email"];
+  $nascimento = $_GET["nascimento"];
+  $observacoes = $_GET["observacoes"];
 
-}
-?>
+  $existe = $pdo->query("SELECT 1 FROM contatos WHERE id = $id")->fetch();
 
-<?php 
-
-  if(isset($_GET['id'])) {
-    $id_update = addslashes($_GET['id']);
-    $res = $p->buscarDados($id);
+  if ($existe) {
+    //atualizar
+    $pdo->query("UPDATE contatos SET nome='$nome', telefone='$telefone', email='$email',
+                 nascimento='$nascimento', observacoes='$observacoes' WHERE id=$id");
+  } else {
+    //inserir
+    $pdo->query("INSERT INTO contatos(id, nome, telefone, email, nascimento, observacoes)
+          VALUES('$id', '$nome', '$telefone', '$email', '$nascimento', '$observacoes')");
   }
+  header("Location: teste.php");
+}
 
+//exluir
+if (isset($_GET['acao']) && $_GET['acao'] == 'excluir') {
+  $id = $_GET['id'];
+  $pdo->query("DELETE FROM contatos WHERE id = $id");
+  header("Location: teste.php");
+}
+
+//editar
+$contato = [
+  "id" => "",
+  "nome" => "",
+  "telefone" => "",
+  "email" => "",
+  "nascimento" => "",
+  "observacoes" => ""
+];
+
+if (isset($_GET["acao"]) && $_GET["acao"] == "editar") {
+  $id = $_GET['id'];
+  $resultado = $pdo->query("SELECT * FROM contatos WHERE id = $id");
+  $contato = $resultado->fetch();
+}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -45,46 +71,47 @@ function atualizarDados() {
   </header>
 
   <body>
-    <div class="botao_adc_numero">
-      <button class="contact_btn">Novo Contato</button>
-    </div>
-
     <section id="form_container">
-      <form action="cria_contato.php" method="GET" class="formulario">
+      <form method="GET" class="formulario">
+
+        <input type="hidden" name="acao" value="salvar">
+        <!--         <input type="hidden" name="id" value="<?php echo $contato['id']; ?>"> -->
         <div class="input_box">
           <label for="id">ID:</label>
-          <input type="text" id="id" name="id" value="<?php if (isset($res)) {
-            echo $res['nome'];} ?>" />
+          <input type="text" name="id" id="id" value="<?php echo $contato['id']; ?>">
         </div>
+
+
 
         <div class="input_box">
           <label for="nome">Nome:</label>
-          <input type="text" id="nome" name="nome" />
+          <input type="text" id="nome" name="nome" value="<?php echo $contato['nome']; ?>" required>
         </div>
 
         <div class="input_box">
           <label for="telefone">Telefone:</label>
-          <input type="tel" id="telefone" name="telefone" />
+          <input type="tel" id="telefone" name="telefone" value="<?php echo $contato['telefone']; ?>" required>
         </div>
 
         <div class="input_box">
           <label for="email">Email:</label>
-          <input type="email" id="email" name="email" />
+          <input type="email" id="email" name="email" value="<?php echo $contato['email']; ?>" required>
         </div>
 
         <div class="input_box">
           <label for="nascimento">Data de Nascimento:</label>
-          <input type="date" id="nascimento" name="nascimento" />
+          <input type="date" id="nascimento" name="nascimento" value="<?php echo $contato['nascimento']; ?>" required>
         </div>
 
         <div class="input_box">
           <label for="observacoes">Observações:</label>
-          <input type="text" name="observacoes" id="observacoes"></input>
+          <input type="text" name="observacoes" id="observacoes" value="<?php echo $contato['observacoes']; ?>">
         </div>
 
-        <input type="submit" value="Adicionar Contato" />
+        <input type="submit" value="Salvar" />
       </form>
     </section>
+
 
     <section id="table_container">
       <div class="table_content">
@@ -103,21 +130,19 @@ function atualizarDados() {
 
           <tbody class="table_body">
             <?php
-            $stm = $pdo->query("SELECT * FROM `contatos`");
-            $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($rows as $row) {
+            $todos = $pdo->query("SELECT * FROM `contatos`");
+            foreach ($todos as $linha) {
               echo "<tr>";
-              echo "<td>" . $row["id"] . "</td>";
-              echo "<td>" . $row["nome"] . "</td>";
-              echo "<td>" . $row["telefone"] . "</td>";
-              echo "<td>" . $row["email"] . "</td>";
-              echo "<td>" . $row["nascimento"] . "</td>";
-              echo "<td>" . $row["observacoes"] . "</td>";
-              echo "<td><a href='teste.php?id=". $row['id'] ."'><button>Editar Contato</button></a></td>";
-              echo "<td><a href='delete.php?id=". $row['id'] ."'><button>Excluir Contato</button></a></td>";
+              echo "<td>{$linha['id']}</td>";
+              echo "<td>{$linha['nome']}</td>";
+              echo "<td>{$linha['telefone']}</td>";
+              echo "<td>{$linha['email']}</td>";
+              echo "<td>{$linha['nascimento']}</td>";
+              echo "<td>{$linha['observacoes']}</td>";
+              echo "<td><a href='teste.php?acao=editar&id={$linha['id']}'>Editar</a> |
+                  <a href='teste.php?acao=excluir&id={$linha['id']}' onclick=\"return confirm('Deseja excluir?')\">Excluir</a></td>";
               echo "</tr>";
             }
-
             ?>
           </tbody>
         </table>
