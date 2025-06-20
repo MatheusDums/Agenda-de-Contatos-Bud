@@ -29,7 +29,10 @@ if (isset($_GET["acao"]) && $_GET["acao"] == 'salvar') {
           VALUES('$id', '$nome', '$telefone', '$email', '$nascimento', '$observacoes')");
   }
   header("Location: teste.php");
-}
+} 
+
+// esvaziar o formulário
+
 
 //exluir
 if (isset($_GET['acao']) && $_GET['acao'] == 'excluir') {
@@ -75,13 +78,11 @@ if (isset($_GET["acao"]) && $_GET["acao"] == "editar") {
       <form method="GET" class="formulario">
 
         <input type="hidden" name="acao" value="salvar">
-        <!--         <input type="hidden" name="id" value="<?php echo $contato['id']; ?>"> -->
+
         <div class="input_box">
-          <label for="id">ID:</label>
-          <input type="text" name="id" id="id" value="<?php echo $contato['id']; ?>">
+
+          <input type="hidden" name="id" id="id" value="<?php echo $contato['id']; ?>">
         </div>
-
-
 
         <div class="input_box">
           <label for="nome">Nome:</label>
@@ -109,6 +110,7 @@ if (isset($_GET["acao"]) && $_GET["acao"] == "editar") {
         </div>
 
         <input type="submit" value="Salvar" />
+        <input type="submit" value="Cancelar">
       </form>
     </section>
 
@@ -118,7 +120,7 @@ if (isset($_GET["acao"]) && $_GET["acao"] == "editar") {
         <table class="table">
           <thead class="table_head">
             <tr>
-              <th>ID</th>
+<!--               <th>ID</th> -->
               <th>Nome</th>
               <th>Telefone</th>
               <th>Email</th>
@@ -133,7 +135,7 @@ if (isset($_GET["acao"]) && $_GET["acao"] == "editar") {
             $todos = $pdo->query("SELECT * FROM `contatos`");
             foreach ($todos as $linha) {
               echo "<tr>";
-              echo "<td>{$linha['id']}</td>";
+/*               echo "<td>{$linha['id']}</td>"; */
               echo "<td>{$linha['nome']}</td>";
               echo "<td>{$linha['telefone']}</td>";
               echo "<td>{$linha['email']}</td>";

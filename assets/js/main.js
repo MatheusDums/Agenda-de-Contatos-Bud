@@ -13,10 +13,3 @@ function showForm() {
     botao_altera.innerHTML = "Adicionar Contato";
   }
 } */
-
-let btn_edita = document.querySelector('.edita_btn');
-let formulario = document.querySelector('#form_container')
-
-btn_edita.addEventListener('click', function() {
-
-})

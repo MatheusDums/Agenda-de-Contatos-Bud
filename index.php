@@ -1,4 +1,4 @@
-<?php
+ <?php
 /* conectando ao banco de dados (igual ao conector.php)*/
 
 $servidor = "localhost";
@@ -8,7 +8,7 @@ $senha = "";
 
 $pdo = new PDO("mysql:host=$servidor;dbname=$banco", $usuario, $senha);
 
-// salvar contatos
+// salvar contato
 if (isset($_GET["acao"]) && $_GET["acao"] == 'salvar') {
   $id = $_GET["id"];
   $nome = $_GET["nome"];
@@ -20,11 +20,9 @@ if (isset($_GET["acao"]) && $_GET["acao"] == 'salvar') {
   $existe = $pdo->query("SELECT 1 FROM contatos WHERE id = $id")->fetch();
 
   if ($existe) {
-    //atualizar
     $pdo->query("UPDATE contatos SET nome='$nome', telefone='$telefone', email='$email',
-                 nascimento='$nascimento', observacoes='$observacoes' WHERE id=$id");
+          nascimento='$nascimento', observacoes='$observacoes' WHERE id=$id");
   } else {
-    //inserir
     $pdo->query("INSERT INTO contatos(id, nome, telefone, email, nascimento, observacoes)
           VALUES('$id', '$nome', '$telefone', '$email', '$nascimento', '$observacoes')");
   }
